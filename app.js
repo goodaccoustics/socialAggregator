@@ -10,19 +10,11 @@ var authRouter = require('./routes/auth');
 // added by Justin Lim
 var express = require('express');
 var app = express();
+
 var passport = require('passport');
 var session = require('express-session');
-var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
-passport.use(new GoogleStrategy({
-	clientID: '609318490070-2bau1106rjghkh3mp21npps6oi15ruk9.apps.googleusercontent.com',
-	clientSecret: 'TjeiDLZPtDzX3lOD7AYZuaF7',
-	callbackURL: 'http://localhost:3000/auth/google/callback'
-	},
-	function(req, accessToken, refreshToken, profile, done){
-		// set up user in your app database
-		done(null, profile);
-	}
-));
+//var mongoose = require('mongoose');
+//var db = mongoose.connect('mongodb://localhost/socialAgg');
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 //app.set('view engine', 'jade');
@@ -36,15 +28,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 //jl for passport
 app.use(session({secret: 'anything'}));
-app.use(passport.initialize());
-app.use(passport.session());
-passport.serializeUser(function(user, done){
-	done(null, user);
-}); //place user object into the session
-passport.deserializeUser(function(user, done){
-	done(null, user);
-});
-
+require('./config/passport')(app);
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
